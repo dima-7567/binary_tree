@@ -1,5 +1,5 @@
 class Node:
-    def __init__(self, parent: int, left_child=None, right_child=None):
+    def __init__(self, parent, left_child=None, right_child=None):
         self.parent = parent
         if left_child is not None:
             self.left_child = Node(left_child)
@@ -14,31 +14,36 @@ class Node:
 def print_level(*trees, level: int):
     if level != 0:
         for tree in trees:
-            if tree is not None:
-                if tree.left_child is not None and tree.right_child is not None:
-                    print_level(tree.left_child, tree.right_child, level=level - 1)
-                elif tree.right_child is None and tree.left_child is not None:
-                    print_level(tree.left_child, level=level - 1)
-                elif tree.left_child is None and tree.right_child is not None:
-                    print_level(tree.right_child, level=level - 1)
-                else:
-                    continue
+            if tree is None:
+                print_level(Node("."), Node("."), level=level - 1)
+            else:
+                if tree.left_child is None:
+                    tree.left_child = Node(".")
+                if tree.right_child is None:
+                    tree.right_child = Node(".")
+                print_level(tree.left_child, tree.right_child, level=level - 1)
+
     else:
         for tree in trees:
             if tree is not None:
                 if tree.parent is not None:
                     print(tree.parent, end=" ")
+                else:
+                    print(" ", end=" ")
+            else:
+                print(" ", end=" ")
 
 
-def print_b_tree(tree):
-    for i in range(4):
+def print_b_tree(tree, high):
+    for i in range(high):
+        print(end=" " * ((2 ** (high - 1)) - i ** 2))
         print_level(tree, level=i)
         print()
 
 
 def create_btree(in_data: tuple):
     tree = Node(in_data[0])
-    for el in range(len(in_data) - 1):
+    for el in range(len(in_data)):
         insert_el(in_data[el], tree)
     return tree
 
@@ -68,6 +73,5 @@ def print_tree(tree: Node):
         print_tree(tree.right_child)
 
 
-btree = create_btree((5, 4, 3, 17, 8, 9, 1, 90, 44, 2, 5))
+btree = create_btree((5, 6, 9, 8, 7, 1, 2, 3, 4))
 
-print_b_tree(btree)
